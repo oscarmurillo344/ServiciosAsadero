@@ -2,7 +2,6 @@ package com.asaderandys.serviciosasadero.modulos.inventarios.Modelos;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.money.*;
 import java.math.BigDecimal;
 
 @Entity
