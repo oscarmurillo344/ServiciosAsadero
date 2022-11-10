@@ -1,11 +1,11 @@
 package com.asaderandys.serviciosasadero.modulos.facturar.Modelos;
 
 import com.asaderandys.serviciosasadero.modulos.inventarios.Modelos.Producto;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity

@@ -2,12 +2,7 @@ package com.asaderandys.serviciosasadero.modulos.facturar.Dto;
 
 
 import com.asaderandys.serviciosasadero.modulos.facturar.Modelos.FacturaItems;
-import com.asaderandys.serviciosasadero.modulos.usuarios.Modelos.Usuario;
 
-import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 

@@ -1,7 +1,9 @@
 package com.asaderandys.serviciosasadero.modulos.inventarios.Dto;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
 import java.math.BigDecimal;
 
 public class ProductoDto {

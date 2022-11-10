@@ -3,9 +3,9 @@ package com.asaderandys.serviciosasadero.modulos.facturar.Modelos;
 
 import com.asaderandys.serviciosasadero.modulos.clientes.Modelos.Cliente;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 

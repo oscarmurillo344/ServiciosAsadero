@@ -1,6 +1,5 @@
 package com.asaderandys.serviciosasadero.modulos.usuarios.Controlador;
 
-import com.asaderandys.serviciosasadero.modulos.inventarios.Modelos.Inventario;
 import com.asaderandys.serviciosasadero.modulos.usuarios.Dto.*;
 
 import com.asaderandys.serviciosasadero.modulos.usuarios.Modelos.Rol;
@@ -8,6 +7,7 @@ import com.asaderandys.serviciosasadero.modulos.usuarios.Modelos.Usuario;
 import com.asaderandys.serviciosasadero.modulos.usuarios.Servicios.RolService;
 import com.asaderandys.serviciosasadero.modulos.usuarios.Servicios.UsuarioService;
 import com.asaderandys.serviciosasadero.utilitarios.MensajesUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 

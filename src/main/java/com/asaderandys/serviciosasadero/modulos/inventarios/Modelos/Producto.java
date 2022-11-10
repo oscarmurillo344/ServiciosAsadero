@@ -1,7 +1,8 @@
 package com.asaderandys.serviciosasadero.modulos.inventarios.Modelos;
 
+import com.sun.istack.NotNull;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity

@@ -1,9 +1,9 @@
 package com.asaderandys.serviciosasadero.modulos.gastos.Dto;
 
-import com.asaderandys.serviciosasadero.modulos.usuarios.Modelos.Usuario;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import com.sun.istack.NotNull;
+import jakarta.validation.constraints.NotBlank;
+
 import java.math.BigDecimal;
 
 public class GastoDto {

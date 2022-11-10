@@ -2,9 +2,9 @@ package com.asaderandys.serviciosasadero.modulos.inventarios.Modelos;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 
 @Entity
