@@ -26,9 +26,6 @@ public class Inventario {
     private String extras;
 
     @NotNull
-    private Integer cantidad;
-
-    @NotNull
     private Integer cantidadExiste;
 
     @NotNull
@@ -36,11 +33,10 @@ public class Inventario {
 
     public Inventario(){}
 
-    public Inventario(@NotNull Calendar fecha, Producto producto, String extras, @NotNull Integer cantidad, @NotNull Integer cantidadExiste, @NotNull Integer cantidadTotal) {
+    public Inventario(@NotNull Calendar fecha, Producto producto, String extras,@NotNull Integer cantidadExiste, @NotNull Integer cantidadTotal) {
         this.fecha = fecha;
         this.producto = producto;
         this.extras = extras;
-        this.cantidad = cantidad;
         this.cantidadExiste = cantidadExiste;
         this.cantidadTotal = cantidadTotal;
     }
@@ -76,15 +72,6 @@ public class Inventario {
     public void setExtras(String extras) {
         this.extras = extras;
     }
-
-    public Integer getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(Integer cantidad) {
-        this.cantidad = cantidad;
-    }
-
     public Integer getCantidadExiste() {
         return cantidadExiste;
     }

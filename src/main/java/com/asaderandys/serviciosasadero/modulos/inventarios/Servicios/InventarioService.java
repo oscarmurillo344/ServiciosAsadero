@@ -7,6 +7,7 @@ import com.asaderandys.serviciosasadero.modulos.inventarios.Modelos.Producto;
 import com.asaderandys.serviciosasadero.modulos.inventarios.Repositorios.inventarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,38 +22,39 @@ public class InventarioService {
     @Autowired
     inventarioRepository inventariorepository;
 
-    public List<Inventario> listar(){ return inventariorepository.findAll(); }
+    public List<Inventario> listar(){ return inventariorepository.findAll(Sort.by(Sort.Direction.ASC, "producto.nombre")); }
 
     public Optional<Inventario> ObtenerInventarioPorId(Long id){ return inventariorepository.findById(id); }
 
-    public void IngresarInventario(inventarioDto inven) throws DataAccessException {
+    public void IngresarAndEditarInventario(inventarioDto inven) throws DataAccessException {
         Inventario inventario;
         if(inven.getId() == 0){
             inventario =new Inventario(
-                    Calendar.getInstance(),inven.getProducto(),inven.getExtras(),
-                    inven.getCantidad(),inven.getCantidad(),0);
+                    Calendar.getInstance(),inven.getProducto(),inven.getExtras(),inven.getCantidad(),0);
         }else{
             inventario=this.ObtenerInventarioPorId(inven.getId()).get();
-            inventario.setCantidadTotal(inven.getCantidad()+inventario.getCantidadExiste());
+            inventario.setCantidadTotal(inven.getCantidad());
             inventario.setFecha(Calendar.getInstance());
-            inventario.setCantidad(inven.getCantidad());
-            inventario.setCantidadExiste(inven.getCantidad());
+            inventario.setCantidadExiste(inven.getCantidad()+inventario.getCantidadExiste());
             inventario.setExtras(inven.getExtras());
         }
         inventariorepository.save(inventario);
     }
 
-    public void ActulizarMercaderia(Inventario inventa, actualizarPollo update)throws DataAccessException{
-        int valor=0,presa=0;
-        valor=inventa.getCantidadExiste()-update.getPollo();
+    public void ActulizarMercaderia(Long id, actualizarPollo update)throws DataAccessException{
+        int pollo = 0,presa = 0;
+        int valorPollo = 8;
+        Inventario inventario = this.ObtenerInventarioPorId(id).get();
+
+        pollo = inventario.getCantidadExiste() - update.getPollo();
         if(update.getPresa()>0){
-            valor--;
-            presa=8+inventa.getProducto().getPresa();
-            presa=presa-update.getPresa();
-            inventa.getProducto().setPresa(presa);
+            pollo--;
+            presa = valorPollo + inventario.getProducto().getPresa();
+            presa  -= update.getPresa();
+            inventario.getProducto().setPresa(presa);
         }
-        inventa.setCantidadExiste(valor);
-        inventariorepository.save(inventa);
+        inventario.setCantidadExiste(pollo);
+        inventariorepository.save(inventario);
     }
     public void GuardarUnico(Inventario in){ inventariorepository.save(in);}
 

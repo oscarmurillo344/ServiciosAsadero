@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 
 public class ProductoDto {
 
-    @NotBlank
     private Long id;
     @NotBlank
     private String nombre;

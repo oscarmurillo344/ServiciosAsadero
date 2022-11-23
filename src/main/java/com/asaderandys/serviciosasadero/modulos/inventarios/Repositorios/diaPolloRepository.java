@@ -4,9 +4,5 @@ package com.asaderandys.serviciosasadero.modulos.inventarios.Repositorios;
 import com.asaderandys.serviciosasadero.modulos.inventarios.Modelos.DiaPollo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface diaPolloRepository extends JpaRepository<DiaPollo,Long> {
-
-    List<DiaPollo> findAllById(int id);
 }

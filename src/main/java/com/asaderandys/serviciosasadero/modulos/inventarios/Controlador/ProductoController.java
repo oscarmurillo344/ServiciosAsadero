@@ -17,7 +17,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/producto")
-@CrossOrigin(origins = {"https://asaderoweb.herokuapp.com","http://192.168.100.115:4200"})
 public class ProductoController {
 
     @Autowired
@@ -55,7 +54,7 @@ public class ProductoController {
         try{
         if(productoDto.getNombre().isBlank())
             return new ResponseEntity(new Mensaje(MensajesUtils.Error_Inventario_05), HttpStatus.BAD_REQUEST);
-        if(productoDto.getPrecio().longValue() < 0 )
+        if(productoDto.getPrecio().longValue() < 0.0 )
             return new ResponseEntity(new Mensaje(MensajesUtils.Error_Inventario_03), HttpStatus.BAD_REQUEST);
         if(productoService.ExistePorNombre(productoDto.getNombre()))
             return new ResponseEntity(new Mensaje(MensajesUtils.Error_Inventario_02), HttpStatus.BAD_REQUEST);

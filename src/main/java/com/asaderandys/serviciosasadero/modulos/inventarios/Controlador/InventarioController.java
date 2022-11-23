@@ -4,7 +4,6 @@ import com.asaderandys.serviciosasadero.modulos.inventarios.Dto.actualizarPollo;
 import com.asaderandys.serviciosasadero.modulos.inventarios.Dto.inventarioDto;
 import com.asaderandys.serviciosasadero.modulos.inventarios.Modelos.Inventario;
 import com.asaderandys.serviciosasadero.modulos.inventarios.Modelos.DiaPollo;
-import com.asaderandys.serviciosasadero.modulos.inventarios.Servicios.ProductoService;
 import com.asaderandys.serviciosasadero.modulos.inventarios.Servicios.DiaPolloService;
 import com.asaderandys.serviciosasadero.modulos.inventarios.Servicios.InventarioService;
 import com.asaderandys.serviciosasadero.modulos.usuarios.Dto.Mensaje;
@@ -21,19 +20,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/inventario")
-@CrossOrigin(origins = {"https://asaderoweb.herokuapp.com","http://192.168.100.115:4200"})
 public class InventarioController {
 
     @Autowired
+
     InventarioService inventarioservice;
-    @Autowired
-    ProductoService productoService;
     @Autowired
     DiaPolloService diaservice;
 
 
     @GetMapping("/listar")
-    public ResponseEntity<List<Inventario>> list(){
+    public ResponseEntity<List<Inventario>> listar(){
         try{
         List<Inventario> list = inventarioservice.listar();
         return new ResponseEntity(list, HttpStatus.OK);
@@ -58,7 +55,7 @@ public class InventarioController {
         if(invenDto.getProducto().getPrecio().longValue() < 0 )
             return new ResponseEntity(new Mensaje(MensajesUtils.Error_Inventario_03), HttpStatus.BAD_REQUEST);
 
-        inventarioservice.IngresarInventario(invenDto);
+        inventarioservice.IngresarAndEditarInventario(invenDto);
         return new ResponseEntity(new Mensaje(MensajesUtils.Exitoso_01), HttpStatus.OK);
         }catch (DataAccessException ex){
             return new ResponseEntity(new Mensaje
@@ -68,16 +65,35 @@ public class InventarioController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/actualizar")
-    public ResponseEntity<?> Actualizar(@RequestBody inventarioDto invenDto){
+    @PostMapping("/actualizar")
+    public ResponseEntity<?> Editar(@RequestBody inventarioDto invenDto){
+        try{
+            if(invenDto.getCantidad()<0)
+                return new ResponseEntity(new Mensaje(MensajesUtils.Error_Inventario_01), HttpStatus.BAD_REQUEST);
+            if(invenDto.getProducto().getNombre().isBlank())
+                return new ResponseEntity(new Mensaje(MensajesUtils.Error_Inventario_05), HttpStatus.BAD_REQUEST);
+            if(invenDto.getProducto().getPrecio().longValue() < 0 )
+                return new ResponseEntity(new Mensaje(MensajesUtils.Error_Inventario_03), HttpStatus.BAD_REQUEST);
+
+            inventarioservice.IngresarAndEditarInventario(invenDto);
+            return new ResponseEntity(new Mensaje(MensajesUtils.Exitoso_01), HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/mercaderia/actualizar/{id}")
+    public ResponseEntity<?> MercaderiaActualizar(@PathVariable("id")Long id, @RequestBody  actualizarPollo update){
         try{
 
-        if(!inventarioservice.ExistePorId(invenDto.getId()))
+        if(!inventarioservice.ExistePorId(id))
                 return new ResponseEntity(new Mensaje(MensajesUtils.Error_Inventarioo_04), HttpStatus.BAD_REQUEST);
-        if(invenDto.getCantidad()<0)
+        if(update.getPollo() < 0)
             return new ResponseEntity(new Mensaje(MensajesUtils.Error_Inventario_01), HttpStatus.BAD_REQUEST);
 
-        inventarioservice.IngresarInventario(invenDto);
+        inventarioservice.ActulizarMercaderia(id,update);
         return new ResponseEntity(new Mensaje(MensajesUtils.Exitoso_01), HttpStatus.OK);
         }catch (DataAccessException ex){
             return new ResponseEntity(new Mensaje

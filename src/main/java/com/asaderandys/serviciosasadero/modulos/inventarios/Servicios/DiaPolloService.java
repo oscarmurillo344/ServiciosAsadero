@@ -28,9 +28,9 @@ public class DiaPolloService {
         if(diaRepo.findAll().size() <= 0){
             dia=new DiaPollo(0,0);
         }else {
-            dia=diaRepo.getOne(1L);
-            dia.setPollo(update.getPollo());
-            dia.setPresa(update.getPresa());
+            dia=diaRepo.getById(1L);
+            dia.setPollo(update.getPollo() + dia.getPollo());
+            dia.setPresa(update.getPresa() + dia.getPresa());
         }
         diaRepo.save(dia);
     }
