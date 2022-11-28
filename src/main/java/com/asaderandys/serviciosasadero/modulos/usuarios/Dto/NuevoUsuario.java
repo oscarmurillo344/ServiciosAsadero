@@ -1,8 +1,7 @@
 package com.asaderandys.serviciosasadero.modulos.usuarios.Dto;
 
+import com.asaderandys.serviciosasadero.modulos.usuarios.Modelos.Rol;
 import jakarta.validation.constraints.NotBlank;
-
-import java.util.HashSet;
 import java.util.Set;
 
 public class NuevoUsuario {
@@ -16,7 +15,15 @@ public class NuevoUsuario {
     @NotBlank
     private String password;
 
-    private Set<String> roles = new HashSet<>();
+    private Set<Rol> roles;
+
+    public Set<Rol> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Rol> roles) {
+        this.roles = roles;
+    }
 
     public NuevoUsuario(){
     }
@@ -51,11 +58,4 @@ public class NuevoUsuario {
         this.password = password;
     }
 
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
 }

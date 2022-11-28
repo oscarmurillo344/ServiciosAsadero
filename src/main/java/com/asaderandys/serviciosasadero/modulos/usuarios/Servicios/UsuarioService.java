@@ -34,12 +34,7 @@ public class UsuarioService {
     public boolean ExistePorNombreUsuario(String nombreUsuario)throws DataAccessException{
         return usuarioRepository.existsByNombreUsuario(nombreUsuario);
     }
-    public void NuevoUsuario(Usuario usuario,Set<String> rol) throws DataAccessException {
-        Set<Rol> roles = new HashSet<>();
-        roles.add(rolService.ObtenerRol(RolNombre.ROLE_USER).get());
-        if (rol.contains("admin"))
-            roles.add(rolService.ObtenerRol(RolNombre.ROLE_ADMIN).get());
-        usuario.setRoles(roles);
+    public void NuevoUsuario(Usuario usuario) throws DataAccessException {
         usuarioRepository.save(usuario);
     }
 

@@ -48,6 +48,19 @@ public class AuthController {
     }
 
     @Secured({"ROLE_ADMIN"})
+    @GetMapping("/rol")
+    public ResponseEntity<?> ListarRoles(){
+        try{
+            List<Rol> list = rolService.ListarRoles();
+            return new ResponseEntity(list, HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Secured({"ROLE_ADMIN"})
     @PostMapping("/ingresar")
     public ResponseEntity<?> Ingresar(@Valid @RequestBody NuevoUsuario nuevoUsuario, BindingResult bindingResult) {
         try{
@@ -57,9 +70,9 @@ public class AuthController {
             return new ResponseEntity(new Mensaje(MensajesUtils.Error_Usuario_02), HttpStatus.BAD_REQUEST);
         Usuario usuario =
                 new Usuario(0L,nuevoUsuario.getNombre(),nuevoUsuario.getApellido() ,nuevoUsuario.getNombreUsuario(),
-                        passwordEncoder.encode(nuevoUsuario.getPassword()));
+                        passwordEncoder.encode(nuevoUsuario.getPassword()), nuevoUsuario.getRoles());
 
-                usuarioService.NuevoUsuario(usuario,nuevoUsuario.getRoles());
+                usuarioService.NuevoUsuario(usuario);
         return new ResponseEntity(new Mensaje(MensajesUtils.Exitoso_01), HttpStatus.CREATED);
         }catch (DataAccessException ex){
             return new ResponseEntity(new Mensaje
