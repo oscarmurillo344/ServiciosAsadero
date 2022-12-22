@@ -10,59 +10,66 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 public interface FacturaRepository extends JpaRepository<Factura, Long> {
 
     @Query(value = "SELECT CASE" +
-            "     WHEN MAX(f.numeroFactura) IS NULL THEN 0" +
-            "     ELSE MAX(f.numeroFactura)" +
+            "     WHEN MAX(f.id) IS NULL THEN 0" +
+            "     ELSE MAX(f.id)" +
             "      END AS NumeroFactura" +
             "     FROM Factura f")
     Long FacturaMaxima();
 
-    @Query(value = "SELECT f.usuarioId AS usuarioId, " +
-                          "pr.nombre AS nombre," +
-                          "pf.MontoPago AS montoPago," +
+    @Query(value = "SELECT pr.nombre AS nombre," +
+                          "pf.montoPago AS precio," +
                           "sum(pf.cantidad) as cantidad " +
             "FROM Factura f INNER JOIN f.facturaItem pf INNER JOIN pf.producto pr " +
-            " where f.FechaIngreso = CURRENT_DATE " +
-            " group by f.usuarioId,pr.nombre,pf.MontoPago " +
+            " where f.fechaIngreso = CURRENT_DATE " +
+            " group by pr.nombre,pf.montoPago " +
+            " order by pr.nombre")
+    List<VentasDay> TotalDay();
+
+    @Query(value = "SELECT pr.nombre AS nombre," +
+            "pf.montoPago AS precio," +
+            "sum(pf.cantidad) as cantidad " +
+            "FROM Factura f INNER JOIN f.facturaItem pf INNER JOIN pf.producto pr " +
+            " where f.fechaIngreso = CURRENT_DATE and f.usuario = :user " +
+            " group by pr.nombre,pf.montoPago " +
             " order by pr.nombre")
     List<VentasDay> TotalDay(@Param("user") String usuario);
 
-    @Query(value = "SELECT f.usuarioId AS usuarioId, " +
-                          "pr.nombre AS nombre," +
-                          "pf.MontoPago AS montoPago," +
+    @Query(value = "SELECT pr.nombre AS nombre," +
+                          "pf.montoPago AS precio," +
                           "sum(pf.cantidad) as cantidad " +
             "FROM Factura f INNER JOIN f.facturaItem pf INNER JOIN pf.producto pr " +
-            " where f.usuarioId = :user and " +
-            "f.FechaIngreso between :dateFirst and :dateSecond " +
-            " group by f.usuarioId,pr.nombre,pf.MontoPago " +
+            " where f.usuario = :user and " +
+            "f.fechaIngreso between :dateFirst and :dateSecond " +
+            " group by pr.nombre,pf.montoPago " +
             " order by pr.nombre")
     List<VentasDay> TotalUserFechas(@Param("user") String usuario,
                                 @Param("dateFirst") Date dateF,
                                 @Param("dateSecond") Date dateS);
 
     @Query(value = "SELECT   pr.nombre AS nombre," +
-                            "pf.MontoPago AS montoPago," +
+                            "pf.montoPago AS precio," +
                             "sum(pf.cantidad) as cantidad " +
             "FROM Factura f INNER JOIN f.facturaItem pf INNER JOIN pf.producto pr " +
-            "WHERE f.FechaIngreso between :dateFirst and  :dateSecond " +
-            " group by pr.nombre,pf.MontoPago " +
+            "WHERE f.fechaIngreso between :dateFirst and  :dateSecond " +
+            " group by pr.nombre,pf.montoPago " +
             " order by pr.nombre")
     List<VentasDay> TotalFechas(@Param("dateFirst") Date dateF,
                                 @Param("dateSecond") Date dateS);
 
-    @Query(value = "SELECT   f.usuarioId AS usuarioId, " +
-                            "pr.nombre AS nombre," +
-                            "pf.MontoPago AS montoPago," +
+    @Query(value = "SELECT  pr.nombre AS nombre," +
+                            "pf.montoPago AS precio," +
                             "sum(pf.cantidad) as cantidad " +
             "FROM Factura f INNER JOIN f.facturaItem pf INNER JOIN pf.producto pr " +
-            " WHERE f.usuarioId= :user and f.DiaIngreso=:dia and " +
-            "f.FechaIngreso between :dateFirst and :dateSecond " +
-            " group by f.usuarioId,pr.nombre,pf.MontoPago " +
+            " WHERE f.usuario = :user and f.diaIngreso=:dia and " +
+            "f.fechaIngreso between :dateFirst and :dateSecond " +
+            " group by f.usuario,pr.nombre,pf.montoPago " +
             " order by pr.nombre")
     List<VentasDay> TotalUserFechasdia(@Param("user") String usuario,
                                     @Param("dateFirst") Date dateF,
@@ -70,34 +77,28 @@ public interface FacturaRepository extends JpaRepository<Factura, Long> {
                                    @Param("dia") String dia);
 
     @Query(value = "SELECT   pr.nombre AS nombre," +
-                            "pf.MontoPago AS montoPago," +
+                            "pf.montoPago AS precio," +
                             "sum(pf.cantidad) as cantidad " +
             "FROM Factura f INNER JOIN f.facturaItem pf INNER JOIN pf.producto pr " +
-            " WHERE f.DiaIngreso=:dia and " +
-            "f.FechaIngreso between :dateFirst and :dateSecond " +
-            " group by pr.nombre,pf.MontoPago " +
+            " WHERE f.diaIngreso=:dia and " +
+            "f.fechaIngreso between :dateFirst and :dateSecond " +
+            " group by pr.nombre,pf.montoPago " +
             " order by pr.nombre")
     List<VentasDay> TotalFechasdia(@Param("dateFirst") Date dateF,
                                        @Param("dateSecond") Date dateS,
                                        @Param("dia") String dia);
 
-    @Query(value = "SELECT f.usuarioId AS usuarioId, " +
-                            "pr.nombre AS nombre, " +
-                            "pf.MontoPago AS montoPago, " +
+    @Query(value = "SELECT pr.nombre AS nombre, " +
+                            "pf.montoPago AS precio, " +
                             "sum(pf.cantidad) as cantidad , " +
-                            "f.FechaIngreso AS FechaIngreso , " +
-                            "f.DiaIngreso AS diaIngreso "+
+                            "f.fechaIngreso AS FechaIngreso , " +
+                            "f.diaIngreso AS diaIngreso "+
             "FROM Factura f INNER JOIN f.facturaItem pf INNER JOIN pf.producto pr " +
-            " where f.FechaIngreso between :dateFirst and :dateSecond " +
-            " group by f.usuarioId,pr.nombre,pr.precio " +
+            " where f.fechaIngreso between :dateFirst and :dateSecond " +
+            " group by pr.nombre,pr.precio " +
             " order by pr.nombre")
     List<VentasDay> TotalFechasComplete(@Param("dateFirst") Date dateF,
                                          @Param("dateSecond") Date dateS);
 
-    List<Factura> findByNumeroFactura(Long id);
-
-    boolean existsByNumeroFactura(Long id);
-
-    Factura deleteByNumeroFactura(Long id);
 
 }

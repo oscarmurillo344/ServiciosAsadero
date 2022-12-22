@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -30,16 +31,15 @@ public class FacturaService {
     public void IngresarFactura(FacturaDto factDto){
         int count=0,count2=0;
         Factura fact = new Factura(
-                factDto.getNumeroFactura(),
-                factDto.getUsuarioId(),
+                factDto.getUsuario(),
                 factDto.getFormaPago(),
                 factDto.getFechaIngreso(),
-                factDto.getHoraIngreso(),
+                factDto.getFechaIngreso(),
                 factDto.getDiaIngreso(),
-                factDto.getFacturaItem()
+                factDto.getFacturaItem().stream().map( m -> new FacturaItems(m.getCantidad(),m.getExtras(),m.getProducto(),m.getDescuento(),m.getMontoPago())).toList()
         );
         for(FacturaItems items : fact.getFacturaItem()){
-            Inventario inventory=inventarioservice.ActulizarProduct(items.getProducto());
+            Inventario inventory = inventarioservice.BuscarProducto(items.getProducto());
             count=inventory.getCantidadExiste()- items.getCantidad();
             inventory.setCantidadExiste(count);
             inventarioservice.GuardarUnico(inventory);
@@ -53,12 +53,12 @@ public class FacturaService {
                     inventarioservice.GuardarUnico(invent);
                 }
             }
-            facturarepository.save(fact);
         }
+        facturarepository.save(fact);
     }
 
-    public boolean existsByNumero(Long id){
-        return facturarepository.existsByNumeroFactura(id);
+    public boolean existsByNumeroFatura(Long numeroFactura){
+        return facturarepository.existsById(numeroFactura);
     }
 
     public List<Factura> list(){
@@ -66,7 +66,9 @@ public class FacturaService {
     }
 
 
-    public Long  MaximoValor(){ return facturarepository.FacturaMaxima(); }
+    public Long  MaximoValor(){ return facturarepository.FacturaMaxima() + 1L; }
+
+    public List<VentasDay> TotalDia(){ return facturarepository.TotalDay();}
 
     public List<VentasDay> TotalDia(String usuario){ return facturarepository.TotalDay(usuario);}
 
@@ -85,14 +87,17 @@ public class FacturaService {
     public List<VentasDay> TotalFechasDia(Date dateF, Date dateS,String dia)
     { return facturarepository.TotalFechasdia(dateF,dateS,dia);}
 
-    public List<Factura> listaNumero(Long id){return facturarepository.findByNumeroFactura(id);}
+    public Optional<Factura> listaNumero(Long numeroFactura){return facturarepository.findById(numeroFactura);}
 
     public void EliminarFactura(Long numero){
         int presa=0,cantidad=0,Totalpresa=0;
-        Factura listaFactura = facturarepository.deleteByNumeroFactura(numero);
-        for(FacturaItems factura : listaFactura.getFacturaItem()){
-            presa+=factura.getProducto().getPresa();
-            cantidad=factura.getCantidad();
+        Optional<Factura> listaFactura = facturarepository.findById(numero);
+        for(FacturaItems factura : listaFactura.get().getFacturaItem()){
+            Inventario p = inventarioservice.BuscarProducto(factura.getProducto());
+            p.setCantidadExiste(p.getCantidadExiste() + factura.getCantidad());
+            presa += factura.getProducto().getPresa();
+            cantidad = factura.getCantidad();
+            inventarioservice.GuardarUnico(p);
         }
         Totalpresa=presa*cantidad;
         List<DiaPollo> lista= diaservice.Listar();
@@ -107,7 +112,7 @@ public class FacturaService {
             }else listaPollo.setPresa(listaPollo.getPresa()+Totalpresa);
             diaservice.Ingresar(listaPollo);
         }
-
+        facturarepository.deleteById(numero);
     }
 
 }

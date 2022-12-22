@@ -29,8 +29,8 @@ public class DiaPolloService {
             dia=new DiaPollo(0,0);
         }else {
             dia=diaRepo.getById(1L);
-            dia.setPollo(update.getPollo() + dia.getPollo());
-            dia.setPresa(update.getPresa() + dia.getPresa());
+            dia.setPollo(update.getPollo());
+            dia.setPresa(update.getPresa());
         }
         diaRepo.save(dia);
     }

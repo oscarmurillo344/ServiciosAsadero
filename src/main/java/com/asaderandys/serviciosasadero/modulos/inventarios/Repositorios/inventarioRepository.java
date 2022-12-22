@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface inventarioRepository extends JpaRepository<Inventario, Long> {
 
-    Inventario findByProductoId(Producto pid);
+    Inventario findByProducto(Producto p);
 }

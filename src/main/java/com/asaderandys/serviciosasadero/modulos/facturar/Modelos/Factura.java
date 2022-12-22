@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -17,43 +18,39 @@ public class Factura {
     private Long id;
 
     @NotNull
-    private Integer numeroFactura;
+    private String usuario;
 
     @NotNull
-    private String usuarioId;
-
-    @NotNull
-    private String FormaPago;
+    private String formaPago;
 
     @NotNull
     @Temporal(TemporalType.DATE)
-    private Date FechaIngreso;
+    private Date fechaIngreso;
 
     @NotNull
     @Temporal(TemporalType.TIME)
-    private Date HoraIngreso;
+    private Date horaIngreso;
 
     @NotNull
-    private String DiaIngreso;
+    private String diaIngreso;
 
-    @JsonIgnoreProperties(value={"facturas", "hibernateLazyInitializer", "handler"}, allowSetters=true)
+    @JsonIgnoreProperties(value={"cliente", "hibernateLazyInitializer", "handler"}, allowSetters=true)
     @ManyToOne(fetch = FetchType.LAZY)
     private Cliente cliente;
 
-    @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<FacturaItems> facturaItem;
 
     public Factura(){
     }
 
-    public Factura(@NotNull Integer numeroFactura, @NotNull String usuarioId, @NotNull String formaPago, @NotNull Date fechaIngreso, @NotNull Date horaIngreso, @NotNull String diaIngreso, List<FacturaItems> facturaItem) {
-        this.numeroFactura = numeroFactura;
-        this.usuarioId = usuarioId;
-        FormaPago = formaPago;
-        FechaIngreso = fechaIngreso;
-        HoraIngreso = horaIngreso;
-        DiaIngreso = diaIngreso;
+    public Factura(@NotNull String usuarioId, @NotNull String formaPago, @NotNull Date fechaIngreso, @NotNull Date horaIngreso, @NotNull String diaIngreso, List<FacturaItems> facturaItem) {
+        this.usuario = usuarioId;
+        this.formaPago = formaPago;
+        this.fechaIngreso = fechaIngreso;
+        this.horaIngreso = horaIngreso;
+        this.diaIngreso = diaIngreso;
         this.facturaItem = facturaItem;
     }
 
@@ -65,52 +62,52 @@ public class Factura {
         this.id = id;
     }
 
-    public Integer getNumeroFactura() {
-        return numeroFactura;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setNumeroFactura(Integer numeroFactura) {
-        this.numeroFactura = numeroFactura;
-    }
-
-    public String getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(String usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public String getFormaPago() {
-        return FormaPago;
+        return formaPago;
     }
 
     public void setFormaPago(String formaPago) {
-        FormaPago = formaPago;
+        this.formaPago = formaPago;
     }
 
     public Date getFechaIngreso() {
-        return FechaIngreso;
+        return fechaIngreso;
     }
 
     public void setFechaIngreso(Date fechaIngreso) {
-        FechaIngreso = fechaIngreso;
+        this.fechaIngreso = fechaIngreso;
     }
 
     public Date getHoraIngreso() {
-        return HoraIngreso;
+        return horaIngreso;
     }
 
     public void setHoraIngreso(Date horaIngreso) {
-        HoraIngreso = horaIngreso;
+        this.horaIngreso = horaIngreso;
     }
 
     public String getDiaIngreso() {
-        return DiaIngreso;
+        return diaIngreso;
     }
 
     public void setDiaIngreso(String diaIngreso) {
-        DiaIngreso = diaIngreso;
+        this.diaIngreso = diaIngreso;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
     public List<FacturaItems> getFacturaItem() {
@@ -121,24 +118,16 @@ public class Factura {
         this.facturaItem = facturaItem;
     }
 
-    public Long getSubTotalImporte(){
-        Long Total = 0L;
+    public Float getSubTotalImporte(){
+        float Total = 0;
         for(FacturaItems item: facturaItem){
-           Total =+ item.getImporte();
+           Total = Total + item.getImporte();
         }
         return Total;
     }
 
-    public Long getIVA(){
-        return (getSubTotalImporte().longValue()*12)/100;
+    public Float getIVA(){
+        return (float) (getSubTotalImporte().longValue() * 12) / 100;
     }
-
-    public Long getSubDescuento(Integer valor){
-        if(valor > 0){
-            return (getSubTotalImporte().longValue()*valor)/100;
-        }
-        return 0L;
-    }
-
 
 }

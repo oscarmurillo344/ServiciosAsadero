@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -29,10 +30,10 @@ public class FacturaController {
     @GetMapping("/lista/{numero}")
     public ResponseEntity<List<Factura>> Listar(@PathVariable("numero") Long numero){
         try{
-            if (!facturaservice.existsByNumero(numero))
+            if (!facturaservice.existsByNumeroFatura(numero))
                 return new ResponseEntity(new Mensaje(MensajesUtils.Error_Facturar_03), HttpStatus.NOT_FOUND);
-            List<Factura> list = facturaservice.listaNumero(numero);
-            return new ResponseEntity(list, HttpStatus.OK);
+            Optional<Factura> factura = facturaservice.listaNumero(numero);
+            return new ResponseEntity(factura.get(), HttpStatus.OK);
         }catch (DataAccessException ex){
             return new ResponseEntity(new Mensaje
                     ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
@@ -44,7 +45,7 @@ public class FacturaController {
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> Eliminar(@PathVariable("id")Long id){
         try{
-            if(!facturaservice.existsByNumero(id))
+            if(!facturaservice.existsByNumeroFatura(id))
                 return new ResponseEntity(new Mensaje(MensajesUtils.Error_Facturar_03), HttpStatus.NOT_FOUND);
             facturaservice.EliminarFactura(id);
             return new ResponseEntity(new Mensaje(MensajesUtils.Exitoso_01), HttpStatus.OK);
@@ -73,7 +74,7 @@ public class FacturaController {
     @GetMapping("/numero")
     public ResponseEntity<?> Numerofactura(){
         try{
-        Long NumeroFactura=facturaservice.MaximoValor();
+        Long NumeroFactura = facturaservice.MaximoValor();
         return new ResponseEntity(NumeroFactura, HttpStatus.OK);
         }catch (DataAccessException ex){
             return new ResponseEntity(new Mensaje
@@ -83,11 +84,24 @@ public class FacturaController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/totaldia/{usu}")
-    public ResponseEntity<?> TotalDia(@PathVariable("usu") String usu){
+    @GetMapping("/totaldia/{usuario}")
+    public ResponseEntity<?> TotalDia(@PathVariable("usuario")String usuario){
         try{
-        List<VentasDay> l=facturaservice.TotalDia(usu);
+        List<VentasDay> l=facturaservice.TotalDia(usuario);
         return new ResponseEntity(l, HttpStatus.OK);
+        }catch (DataAccessException ex){
+            return new ResponseEntity(new Mensaje
+                    ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/totaldia")
+    public ResponseEntity<?> TotalDia(){
+        try{
+            List<VentasDay> l=facturaservice.TotalDia();
+            return new ResponseEntity(l, HttpStatus.OK);
         }catch (DataAccessException ex){
             return new ResponseEntity(new Mensaje
                     ("Error: ".concat(ex.getMessage()).concat(", "+ex.getMostSpecificCause().getMessage())),

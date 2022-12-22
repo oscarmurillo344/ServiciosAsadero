@@ -66,7 +66,9 @@ public class InventarioService {
         return inventariorepository.existsById(id);
     }
 
-    public Inventario ActulizarProduct(Producto pid){ return inventariorepository.findByProductoId(pid);}
+    public Inventario BuscarProducto(Producto p) {
+        return inventariorepository.findByProducto(p);
+    }
 
 
 

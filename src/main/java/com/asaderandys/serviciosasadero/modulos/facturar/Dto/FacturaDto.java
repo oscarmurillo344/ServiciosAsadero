@@ -1,88 +1,57 @@
 package com.asaderandys.serviciosasadero.modulos.facturar.Dto;
 
 
-import com.asaderandys.serviciosasadero.modulos.facturar.Modelos.FacturaItems;
-
 import java.util.Date;
 import java.util.List;
 
 public class FacturaDto {
 
-    private Long id;
-    private Integer numeroFactura;
-    private String usuarioId;
-    private String FormaPago;
-    private Date FechaIngreso;
-    private Date HoraIngreso;
-    private String DiaIngreso;
-    private List<FacturaItems> facturaItem;
+    private String usuario;
+    private String formaPago;
+    private Date fechaIngreso;
+    private String diaIngreso;
+    private List<FacturaItemsDto> facturaItem;
 
-     public FacturaDto(){
+    public FacturaDto() {
 
-     }
-
-
-    public Long getId() {
-        return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public Integer getNumeroFactura() {
-        return numeroFactura;
-    }
-
-    public void setNumeroFactura(Integer numeroFactura) {
-        this.numeroFactura = numeroFactura;
-    }
-
-    public String getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(String usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setUsuario(String usuarioId) {
+        this.usuario = usuarioId;
     }
 
     public String getFormaPago() {
-        return FormaPago;
+        return formaPago;
     }
 
     public void setFormaPago(String formaPago) {
-        FormaPago = formaPago;
+        this.formaPago = formaPago;
     }
 
     public Date getFechaIngreso() {
-        return FechaIngreso;
+        return fechaIngreso;
     }
 
     public void setFechaIngreso(Date fechaIngreso) {
-        FechaIngreso = fechaIngreso;
+        this.fechaIngreso = fechaIngreso;
     }
-
-    public Date getHoraIngreso() {
-        return HoraIngreso;
-    }
-
-    public void setHoraIngreso(Date horaIngreso) {
-        HoraIngreso = horaIngreso;
-    }
-
     public String getDiaIngreso() {
-        return DiaIngreso;
+        return diaIngreso;
     }
 
     public void setDiaIngreso(String diaIngreso) {
-        DiaIngreso = diaIngreso;
+        this.diaIngreso = diaIngreso;
     }
 
-    public List<FacturaItems> getFacturaItem() {
+    public List<FacturaItemsDto> getFacturaItem() {
         return facturaItem;
     }
 
-    public void setFacturaItem(List<FacturaItems> facturaItem) {
+    public void setFacturaItem(List<FacturaItemsDto> facturaItem) {
         this.facturaItem = facturaItem;
     }
 }

@@ -1,51 +1,28 @@
-package com.asaderandys.serviciosasadero.modulos.facturar.Modelos;
+package com.asaderandys.serviciosasadero.modulos.facturar.Dto;
 
 import com.asaderandys.serviciosasadero.modulos.inventarios.Modelos.Producto;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.istack.NotNull;
 
-import javax.persistence.*;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 
-@Entity
-public class FacturaItems {
+public class FacturaItemsDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull
     private Integer cantidad;
-
     private String extras;
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @ManyToOne(fetch = FetchType.LAZY)
     private Producto producto;
-
-    @NotNull
     private Integer descuento;
-
-    @NotNull
     private BigDecimal montoPago;
 
-    public FacturaItems() { }
-
-    public FacturaItems(@NotNull Integer cantidad, String extras, Producto producto, @NotNull Integer descuento, @NotNull BigDecimal montoPago) {
+    public FacturaItemsDto(Long id, Integer cantidad, String extras, Producto producto, Integer descuento, BigDecimal montoPago) {
+        this.id = id;
         this.cantidad = cantidad;
         this.extras = extras;
         this.producto = producto;
         this.descuento = descuento;
         this.montoPago = montoPago;
-    }
-
-    public String getExtras() {
-        return extras;
-    }
-
-    public void setExtras(String extras) {
-        this.extras = extras;
     }
 
     public Long getId() {
@@ -64,6 +41,14 @@ public class FacturaItems {
         this.cantidad = cantidad;
     }
 
+    public String getExtras() {
+        return extras;
+    }
+
+    public void setExtras(String extras) {
+        this.extras = extras;
+    }
+
     public Producto getProducto() {
         return producto;
     }
@@ -77,7 +62,7 @@ public class FacturaItems {
     }
 
     public void setDescuento(Integer descuento) {
-        descuento = descuento;
+        this.descuento = descuento;
     }
 
     public BigDecimal getMontoPago() {
@@ -85,17 +70,6 @@ public class FacturaItems {
     }
 
     public void setMontoPago(BigDecimal montoPago) {
-        montoPago = montoPago;
-    }
-
-    public Float getImporte(){
-        return this.cantidad * this.producto.getPrecio().floatValue();
-    }
-
-    public Float getAplyDescuento(){
-        if(this.descuento > 0){
-            return (float)((getImporte() * getMontoPago().floatValue())/100);
-        }
-        return (float) 0;
+        this.montoPago = montoPago;
     }
 }
